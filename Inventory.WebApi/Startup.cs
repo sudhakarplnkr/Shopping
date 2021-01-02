@@ -1,7 +1,9 @@
 namespace Inventory.WebApi
 {
+    using Inventory.WebApiDbContext;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -23,6 +25,9 @@ namespace Inventory.WebApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Inventory", Version = "v1" });
             });
+
+            services.AddDbContext<InventoryContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("InventoryConnection")));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -30,6 +35,12 @@ namespace Inventory.WebApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<InventoryContext>();
+                context.Database.EnsureCreated();
             }
 
             app.UseSwagger();
