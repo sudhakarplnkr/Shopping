@@ -20,4 +20,6 @@ RUN dotnet publish "Inventory.WebApi/Inventory.WebApi.csproj" -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Inventory.WebApi.dll"]
+COPY ./Inventory.WebApi/wait-for-it.sh ./wait-for-it.sh
+RUN chmod +x wait-for-it.sh
+ENTRYPOINT ["./wait-for-it.sh", "db:1433", "-t", "120", "--", "dotnet", "Inventory.WebApi.dll"]
