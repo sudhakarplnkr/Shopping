@@ -8,6 +8,10 @@ namespace Inventory.WebApi
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.OpenApi.Models;
+    using MediatR;
+    using System.Reflection;
+    using AutoMapper;
+    using System.IO;
 
     public class Startup
     {
@@ -21,6 +25,9 @@ namespace Inventory.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Inventory", Version = "v1" });
@@ -28,6 +35,15 @@ namespace Inventory.WebApi
 
             services.AddDbContext<InventoryContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("InventoryConnection")));
+
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+#if DEBUG
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+#else
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+#endif
+            IConfigurationRoot configuration = builder.Build();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

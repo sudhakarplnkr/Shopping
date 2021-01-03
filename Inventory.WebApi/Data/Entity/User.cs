@@ -6,12 +6,12 @@ namespace Inventory.WebApi.Data.Entity
     public class User
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; private set; }
 
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
-        public double Mobile { get; set; }
+        public double Mobile { get; private set; }
 
-        public string Email { get; set; }
+        public string Email { get; private set; }
     }
 }
