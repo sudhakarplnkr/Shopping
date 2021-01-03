@@ -10,6 +10,9 @@ RUN dotnet restore "Inventory.WebApi.csproj"
 COPY . .
 WORKDIR "/src/."
 RUN dotnet build "Inventory.WebApi/Inventory.WebApi.csproj" -c Release -o /app/build
+RUN dotnet tool install --global dotnet-ef
+ENV PATH $PATH:/root/.dotnet/tools
+RUN dotnet ef database update -s Inventory.WebApi/Inventory.WebApi.csproj --configuration Release
 
 FROM build AS publish
 RUN dotnet publish "Inventory.WebApi/Inventory.WebApi.csproj" -c Release -o /app/publish

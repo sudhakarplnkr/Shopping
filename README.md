@@ -15,6 +15,10 @@ sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}
 
 Migration
 ---------
+   Install
+   -------
+   dotnet tool install --global dotnet-ef
+   
    Add
    ----
    dotnet ef migrations add <Name> -s Inventory.WebApi.csproj
