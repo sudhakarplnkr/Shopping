@@ -11,9 +11,12 @@ namespace Inventory.WebApiDbContext
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Role> Roles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().ToTable("User");
+            modelBuilder.Entity<Role>().ToTable("Role");
         }
     }
 }
