@@ -27,7 +27,13 @@ namespace Inventory.WebApi
             services.AddControllers();
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(typeof(Startup));
-
+            services.AddCors(option=> {
+                option.AddPolicy("inventory", opt => {
+                    opt.AllowAnyOrigin();
+                    opt.AllowAnyHeader();
+                    opt.AllowAnyMethod();
+                });
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Inventory", Version = "v1" });
@@ -53,6 +59,7 @@ namespace Inventory.WebApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors("inventory");
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<InventoryContext>();
